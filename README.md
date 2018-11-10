@@ -9,4 +9,4 @@ A simple reactive flutter authentication using BLOC pattern.
 1. When entering valid log in data, LOG IN button is then enabled, but if switching to sign up page where password hasn't been confirmed, the SIGN UP button is enabled by default, which is incorrect.
 2. Upon logging out, it rediects to log in page where LOG IN button is enabled by default even though email and password are both empty, which is clearly wrong.
 
-
+*Pull Requests are greatly appreciated to fix these problem!*
