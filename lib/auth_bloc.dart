@@ -44,5 +44,6 @@ class AuthBloc extends Object with AuthValidator {
     _emailController.close();
     _passwordController.close();
     _confirmPasswordController.close();
+    print('bloc disposed');
   }
 }

@@ -13,9 +13,17 @@ class _AuthState extends State<Auth> {
   bool get _isLoginMode => _authMode == AuthMode.Login;
   Future<bool> _authFuture;
 
+  AuthBloc bloc;
+
+  @override
+  void dispose() {
+    bloc.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
-    final bloc = AuthProvider.of(context);
+    bloc = AuthProvider.of(context);
     return Scaffold(
       body: Container(
         margin: EdgeInsets.all(30.0),
@@ -108,13 +116,13 @@ class _AuthState extends State<Auth> {
 
   Widget loginOrSignupButton(AuthBloc bloc) {
     return StreamBuilder(
+        key: ObjectKey(_authMode), // to disable sign up when switching from log in page.
         stream: _isLoginMode ? bloc.submitValid : bloc.signupValid,
-        initialData:  false,
         builder: (context, snapshot) {
           return Container(
             margin: EdgeInsets.fromLTRB(0.0, 30.0, 0.0, 30.0),
             child: FutureBuilder(
-              initialData: false,
+              //initialData: false,
               future: _authFuture,
               builder: (_, AsyncSnapshot<bool> snap) {
                 if (snap.connectionState != ConnectionState.none &&
@@ -124,7 +132,7 @@ class _AuthState extends State<Auth> {
                 return RaisedButton(
                   onPressed: snapshot.hasError || !snapshot.hasData || !snapshot.data
                       ? null
-                      : () => onSubmitPressed(bloc),
+                      : () async => await onSubmitPressed(bloc),
                   color: Colors.blue,
                   child: Text('${_isLoginMode ? 'LOG IN' : 'SIGN UP'}'),
                 );
@@ -141,7 +149,7 @@ class _AuthState extends State<Auth> {
     var response = await _authFuture;
 
     if (response) {
-      return await Navigator.push(
+      return await Navigator.pushReplacement(
           context, MaterialPageRoute(builder: (context) => Home()));
     } else {
       return showDialog(
